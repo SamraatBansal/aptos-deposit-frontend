@@ -290,6 +290,19 @@ const MainPage = () => {
     },
     [aptosClient, account, signAndSubmitTransaction]
   );
+  type AdminVault = {
+    pause?: boolean;
+    coin_store?: { value: any };
+  };
+  const getVaultData = async () => {
+    const resource = await aptosClient.getAccountResource(
+      publishedAddress,
+      // `${publishedAddress.toString()}::SimpleVault::StakeVault`
+      `${publishedAddress.toString()}::SimpleVault::Admin<0x1::aptos_coin::AptosCoin>`
+    );
+    let resourceData: AdminVault = resource.data;
+    console.log(resourceData);
+  };
 
   const renderContent = () => {
     if (connecting || disconnecting) {
@@ -363,6 +376,9 @@ const MainPage = () => {
           </Button>
           <Button id="signBtn" onClick={() => depositToken('10000000')} loading={txLoading.sign}>
             Deposit Token
+          </Button>
+          <Button id="signBtn" onClick={() => getVaultData()} loading={txLoading.sign}>
+            Get Vault Data
           </Button>
           <Button
             id="disconnectBtn"
